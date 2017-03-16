@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using Impersonate.Models;
 using Impersonate.Lib;
 using System.Net;
+using Impersonate.Constants;
 
 namespace Impersonate.Controllers
 {
@@ -179,6 +180,9 @@ namespace Impersonate.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    // Add a persistent claim for testing.
+                    await UserManager.AddClaimAsync(user.Id, new Claim(AuthConstants.ClaimPersistent, $"{model.Email} {DateTime.Today}"));
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
