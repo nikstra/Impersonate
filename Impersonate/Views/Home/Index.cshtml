@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Impersonate.Lib
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -9,6 +10,24 @@
 </div>
 
 <div class="row">
+    <div class="well">
+        @if (User.IsImpersonating())
+        {
+            @:Impersonating user: @User.Identity.Name<br />
+            @:Original username: @User.GetOriginalUsername()<br />
+            @:Persistent claim: @User.GetPersistentClaim()<br />
+            @:Volatile claim: @User.GetVolatileClaim()<br />
+            @Html.ActionLink("Stop Impersonating", "RevertImpersonation", "Account", null, new { title = "Impersonate" })
+        }
+        else
+        {
+            @:User name: @User.Identity.Name<br />
+            @:Persistent claim : @User.GetPersistentClaim()<br />
+            @:Volatile claim: @User.GetVolatileClaim()<br />
+            @Html.ActionLink("Impersonate", "ImpersonateUser", "Account", new { userName = "user1@domain.com" }, new { title = "Impersonate" })
+        }
+    </div>
+
     <div class="col-md-4">
         <h2>Getting started</h2>
         <p>
