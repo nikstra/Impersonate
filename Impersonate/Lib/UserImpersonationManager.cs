@@ -45,8 +45,8 @@ namespace Impersonate.Lib
         private async Task SwitchUser(ApplicationUser user, string originalUsername = null)
         {
             // Use ApplicationSigninManager.CreateUserIdentityAsync() so that ApplicationUser.GenerateUserIdentityAsync() is called.
-            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
-            var signinManager = new ApplicationSignInManager(userManager, authenticationManager);
+            var context = HttpContext.Current.GetOwinContext();
+            var signinManager = context.Get<ApplicationSignInManager>();
             var claimsIdentity = await signinManager.CreateUserIdentityAsync(user);
 
             // Only add claims when we start impersonation.
@@ -56,6 +56,7 @@ namespace Impersonate.Lib
                 claimsIdentity.AddClaim(new Claim(AuthConstants.ClaimOriginalUsername, originalUsername));
             }
 
+            var authenticationManager = context.Authentication;
             authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, claimsIdentity);
         }
