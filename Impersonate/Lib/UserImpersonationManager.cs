@@ -36,8 +36,8 @@ namespace Impersonate.Lib
             var signinManager = new ApplicationSignInManager(userManager, authenticationManager);
             var impersonatedIdentity = await signinManager.CreateUserIdentityAsync(impersonatedUser);
 
-            impersonatedIdentity.AddClaim(new Claim("UserImpersonation", "true"));
-            impersonatedIdentity.AddClaim(new Claim("OriginalUsername", originalUsername));
+            impersonatedIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "true"));
+            impersonatedIdentity.AddClaim(new Claim(AuthConstants.ClaimOriginalUsername, originalUsername));
 
             authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, impersonatedIdentity);

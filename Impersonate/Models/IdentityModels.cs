@@ -22,15 +22,15 @@ namespace Impersonate.Models
             userIdentity.AddClaim(new Claim(AuthConstants.ClaimVolatile, string.Format("Volatile, {0}: {1}", DateTime.Now, persistentClaim)));
 
             // Keep claim when impersonating using UserImpersonationManager.
-            if (previousIdentity?.FindFirstValue("UserImpersonation") == "true")
+            if (previousIdentity?.FindFirstValue(AuthConstants.ClaimUserImpersonation) == "true")
             {
                 // need to preserve impersonation claims
-                userIdentity.AddClaim(new Claim("UserImpersonation", "true"));
-                userIdentity.AddClaim(previousIdentity.FindFirst("OriginalUsername"));
+                userIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "true"));
+                userIdentity.AddClaim(previousIdentity.FindFirst(AuthConstants.ClaimOriginalUsername));
             }
             else
             {
-                userIdentity.AddClaim(new Claim("UserImpersonation", "false"));
+                userIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "false"));
             }
 
             return userIdentity;

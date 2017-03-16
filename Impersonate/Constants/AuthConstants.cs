@@ -7,7 +7,9 @@ namespace Impersonate.Constants
 {
     public static class AuthConstants
     {
+        public const string ClaimOriginalUsername = "OriginalUsername";
         public const string ClaimPersistent = "ClaimPersistent";
+        public const string ClaimUserImpersonation = "UserImpersonation";
         public const string ClaimVolatile = "ClaimVolatile";
         public const string RoleAdmin = "Administrator";
         public const string RoleUser = "User";

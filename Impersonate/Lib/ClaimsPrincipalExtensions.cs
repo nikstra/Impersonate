@@ -24,7 +24,7 @@ namespace Impersonate.Lib
                 return false;
             }
 
-            return claimsPrincipal.HasClaim("UserImpersonation", "true");
+            return claimsPrincipal.HasClaim(AuthConstants.ClaimUserImpersonation, "true");
         }
 
         public static String GetOriginalUsername(this IPrincipal principal)
@@ -45,7 +45,7 @@ namespace Impersonate.Lib
                 return String.Empty;
             }
 
-            var originalUsernameClaim = claimsPrincipal.Claims.SingleOrDefault(c => c.Type == "OriginalUsername");
+            var originalUsernameClaim = claimsPrincipal.Claims.SingleOrDefault(c => c.Type == AuthConstants.ClaimOriginalUsername);
 
             if (originalUsernameClaim == null)
             {
