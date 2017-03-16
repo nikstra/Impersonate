@@ -25,44 +25,39 @@ namespace Impersonate.Lib
 
         public async Task ImpersonateUserAsync(string userName)
         {
-            var context = HttpContext.Current;
-
-            var originalUsername = context.User.Identity.Name;
-
+            var originalUsername = HttpContext.Current.User.Identity.Name;
             var impersonatedUser = await userManager.FindByNameAsync(userName);
-
-            // Use ApplicationSigninManager.CreateUserIdentityAsync() so that ApplicationUser.GenerateUserIdentityAsync() is called.
-            var authenticationManager = context.GetOwinContext().Authentication;
-            var signinManager = new ApplicationSignInManager(userManager, authenticationManager);
-            var impersonatedIdentity = await signinManager.CreateUserIdentityAsync(impersonatedUser);
-
-            impersonatedIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "true"));
-            impersonatedIdentity.AddClaim(new Claim(AuthConstants.ClaimOriginalUsername, originalUsername));
-
-            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, impersonatedIdentity);
+            await SwitchUser(impersonatedUser, originalUsername);
         }
 
         public async Task RevertImpersonationAsync()
         {
-            var context = HttpContext.Current;
-
             if (!HttpContext.Current.User.IsImpersonating())
             {
                 throw new Exception("Unable to remove impersonation because there is no impersonation");
             }
 
             var originalUsername = HttpContext.Current.User.GetOriginalUsername();
-
             var originalUser = await userManager.FindByNameAsync(originalUsername);
+            await SwitchUser(originalUser);
+        }
 
+        private async Task SwitchUser(ApplicationUser user, string originalUsername = null)
+        {
             // Use ApplicationSigninManager.CreateUserIdentityAsync() so that ApplicationUser.GenerateUserIdentityAsync() is called.
-            var authenticationManager = context.GetOwinContext().Authentication;
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
             var signinManager = new ApplicationSignInManager(userManager, authenticationManager);
-            var impersonatedIdentity = await signinManager.CreateUserIdentityAsync(originalUser);
+            var claimsIdentity = await signinManager.CreateUserIdentityAsync(user);
+
+            // Only add claims when we start impersonation.
+            if(!string.IsNullOrEmpty(originalUsername))
+            {
+                claimsIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "true"));
+                claimsIdentity.AddClaim(new Claim(AuthConstants.ClaimOriginalUsername, originalUsername));
+            }
 
             authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, impersonatedIdentity);
+            authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, claimsIdentity);
         }
     }
 }
