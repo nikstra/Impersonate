@@ -52,8 +52,8 @@ namespace Impersonate.Lib
             // Only add claims when we start impersonation.
             if(!string.IsNullOrEmpty(originalUsername))
             {
-                claimsIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "true"));
-                claimsIdentity.AddClaim(new Claim(AuthConstants.ClaimOriginalUsername, originalUsername));
+                claimsIdentity.AddClaim(new Claim(CustomClaimTypes.UserImpersonation, "true"));
+                claimsIdentity.AddClaim(new Claim(CustomClaimTypes.OriginalUsername, originalUsername));
             }
 
             var authenticationManager = context.Authentication;

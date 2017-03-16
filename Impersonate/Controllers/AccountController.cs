@@ -181,7 +181,7 @@ namespace Impersonate.Controllers
                 if (result.Succeeded)
                 {
                     // Add a persistent claim for testing.
-                    await UserManager.AddClaimAsync(user.Id, new Claim(AuthConstants.ClaimPersistent, $"{model.Email} {DateTime.Today}"));
+                    await UserManager.AddClaimAsync(user.Id, new Claim(CustomClaimTypes.Persistent, $"{model.Email} {DateTime.Today}"));
 
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     

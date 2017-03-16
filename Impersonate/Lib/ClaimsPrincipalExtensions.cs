@@ -24,7 +24,7 @@ namespace Impersonate.Lib
                 return false;
             }
 
-            return claimsPrincipal.HasClaim(AuthConstants.ClaimUserImpersonation, "true");
+            return claimsPrincipal.HasClaim(CustomClaimTypes.UserImpersonation, "true");
         }
 
         public static String GetOriginalUsername(this IPrincipal principal)
@@ -45,7 +45,7 @@ namespace Impersonate.Lib
                 return String.Empty;
             }
 
-            var originalUsernameClaim = claimsPrincipal.Claims.SingleOrDefault(c => c.Type == AuthConstants.ClaimOriginalUsername);
+            var originalUsernameClaim = claimsPrincipal.Claims.SingleOrDefault(c => c.Type == CustomClaimTypes.OriginalUsername);
 
             if (originalUsernameClaim == null)
             {
@@ -60,7 +60,7 @@ namespace Impersonate.Lib
             if (principal == null) return null;
 
             return (principal as ClaimsPrincipal).Claims
-                .SingleOrDefault(c => c.Type == AuthConstants.ClaimVolatile)?.Value;
+                .SingleOrDefault(c => c.Type == CustomClaimTypes.Volatile)?.Value;
         }
 
         public static string GetPersistentClaim(this IPrincipal principal)
@@ -68,7 +68,7 @@ namespace Impersonate.Lib
             if (principal == null) return null;
 
             return (principal as ClaimsPrincipal).Claims
-                .SingleOrDefault(c => c.Type == AuthConstants.ClaimPersistent)?.Value;
+                .SingleOrDefault(c => c.Type == CustomClaimTypes.Persistent)?.Value;
         }
 
         // Get the OrganizationId parsed to an int.
@@ -77,7 +77,7 @@ namespace Impersonate.Lib
             if (principal == null) return null;
 
             string organizationId = (principal as ClaimsPrincipal).Claims
-                .SingleOrDefault(c => c.Type == AuthConstants.ClaimPersistent)?.Value;
+                .SingleOrDefault(c => c.Type == CustomClaimTypes.Persistent)?.Value;
 
             int orgId;
             return int.TryParse(organizationId, out orgId) ? (int?)orgId : null;
@@ -88,7 +88,7 @@ namespace Impersonate.Lib
             if (principal == null) return false;
 
             return (principal as ClaimsPrincipal).Claims
-                .Any(c => c.Type == AuthConstants.ClaimVolatile && c.Value == studioId.ToString());
+                .Any(c => c.Type == CustomClaimTypes.Volatile && c.Value == studioId.ToString());
         }
     }
 }

@@ -18,19 +18,19 @@ namespace Impersonate.Models
             // Add custom user claims here
 
             // Use a presistent claim as value for a volatile claim for demonstration purposes.
-            string persistentClaim = userIdentity?.FindFirstValue(AuthConstants.ClaimPersistent);
-            userIdentity.AddClaim(new Claim(AuthConstants.ClaimVolatile, string.Format("Volatile, {0}: {1}", DateTime.Now, persistentClaim)));
+            string persistentClaim = userIdentity?.FindFirstValue(CustomClaimTypes.Persistent);
+            userIdentity.AddClaim(new Claim(CustomClaimTypes.Volatile, string.Format("Volatile, {0}: {1}", DateTime.Now, persistentClaim)));
 
             // Keep claim when impersonating using UserImpersonationManager.
-            if (previousIdentity?.FindFirstValue(AuthConstants.ClaimUserImpersonation) == "true")
+            if (previousIdentity?.FindFirstValue(CustomClaimTypes.UserImpersonation) == "true")
             {
                 // need to preserve impersonation claims
-                userIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "true"));
-                userIdentity.AddClaim(previousIdentity.FindFirst(AuthConstants.ClaimOriginalUsername));
+                userIdentity.AddClaim(new Claim(CustomClaimTypes.UserImpersonation, "true"));
+                userIdentity.AddClaim(previousIdentity.FindFirst(CustomClaimTypes.OriginalUsername));
             }
             else
             {
-                userIdentity.AddClaim(new Claim(AuthConstants.ClaimUserImpersonation, "false"));
+                userIdentity.AddClaim(new Claim(CustomClaimTypes.UserImpersonation, "false"));
             }
 
             return userIdentity;
