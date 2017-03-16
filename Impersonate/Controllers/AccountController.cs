@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Impersonate.Models;
+using Impersonate.Lib;
+using System.Net;
 
 namespace Impersonate.Controllers
 {
@@ -50,6 +52,28 @@ namespace Impersonate.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        public async Task<ActionResult> ImpersonateUser(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            string currentUserId = User.Identity.GetUserId();
+
+            UserImpersonationManager impersonationManager = new UserImpersonationManager();
+            await impersonationManager.ImpersonateUserAsync(userName);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public async Task<ActionResult> RevertImpersonation()
+        {
+            UserImpersonationManager impersonationManager = new UserImpersonationManager();
+            await impersonationManager.RevertImpersonationAsync();
+
+            return RedirectToAction("Index", "Home");
         }
 
         //
