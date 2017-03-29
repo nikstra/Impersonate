@@ -7,9 +7,9 @@ namespace Impersonate.Constants
 {
     public static class CustomClaimTypes
     {
-        public const string OriginalUsername = "OriginalUsername";
-        public const string Persistent = "ClaimPersistent";
-        public const string UserImpersonation = "UserImpersonation";
-        public const string Volatile = "ClaimVolatile";
+        public const string OriginalUsername = "http://github.com/nikstra/identity/claims/originalusername";
+        public const string Persistent = "http://github.com/nikstra/identity/claims/claimpersistent";
+        public const string UserImpersonation = "http://github.com/nikstra/identity/claims/userimpersonation";
+        public const string Volatile = "http://github.com/nikstra/identity/claims/claimvolatile";
     }
 }
